@@ -48,8 +48,10 @@ class UOC_Dataset:
         """
         self.dsTA: Optional[pd.DataFrame] = None # Dataset de tasa de abandono
         self.dsRE: Optional[pd.DataFrame] = None # Dataset de rendimiento de estudiantes
-        self.otroDS: Optional[pd.DataFrame] = None # Introducido via argumento al ejecutar el script
-        self.merged_ds: Optional[pd.DataFrame] = None # Dataset fusionado de abandono y rendimiento
+        self.ds_arg: Optional[pd.DataFrame] = None # Introducido via argumento al ejecutar el script
+        self.dsTA_agrupado: Optional[pd.DataFrame] = None # Dataset de tasa de abandono agrupado
+        self.dsRE_agrupado: Optional[pd.DataFrame] = None # Dataset de rendimiento de estudiantes agrupado
+        self.ds_fusionado: Optional[pd.DataFrame] = None # Dataset fusionado de abandono y rendimiento
  
     
     def get_dsTA(self) -> Optional[pd.DataFrame]:
@@ -57,7 +59,7 @@ class UOC_Dataset:
         Obtener el dataset de tasa de abandono - Si no ha sido cargado, lo abrimos desde el archivo
             returns: pd.DataFrame o None si no se pudo cargar el archivo.
         """
-        if self.dsTA == None:
+        if self.dsTA is None:
             self.dsTA = self.open_xlsx("data/taxa_abandonament.xlsx")
         return self.dsTA    
    
@@ -67,7 +69,7 @@ class UOC_Dataset:
             Obtener el dataset de rendimiento de estudiantes - Si no ha sido cargado, lo abrimos desde el archivo
             returns: pd.DataFrame o None si no se pudo cargar el archivo.
         """
-        if self.dsRE == None:
+        if self.dsRE is None:
             self.dsRE = self.open_xlsx("data/rendiment_estudiants.xlsx")
         return self.dsRE 
   
@@ -76,10 +78,64 @@ class UOC_Dataset:
         Obtener el dataset cargado via argumento al ejecutar el script
             returns: pd.DataFrame o None si no se pudo cargar el archivo.
         """ 
-        if self.otroDS == None:
-            self.otroDS = self.open_xlsx(path)
-        return self.otroDS   
+        if self.ds_arg is None:
+            self.ds_arg = self.open_xlsx(path)
+        return self.ds_arg   
     
+    def get_dsRE_agrupado(self) -> Optional[pd.DataFrame]:
+        """
+        Obtener el dataset de rendimiento de estudiantes agrupado
+            returns: pd.DataFrame o None si no se ha agrupado ningún dataset.
+        """ 
+        if (self.dsRE_agrupado is None):
+            self.dsRE_agrupado = self.agrupar_dataset(
+                self.get_dsRE(),
+                ['Curs Acadèmic', 'Tipus universitat', 'Sigles', 'Tipus Estudi', 'Branca', 'Sexe', 'Integrat S/N'],
+                'Taxa rendiment'
+            ).rename(columns={"Taxa rendiment": "Tasa de rendimiento"}) 
+        return self.dsRE_agrupado   
+    
+    def get_dsTA_agrupado(self) -> Optional[pd.DataFrame]:
+        """
+        Obtener el dataset de tasa de abandono agrupado
+            returns: pd.DataFrame o None si no se ha agrupado ningún dataset.
+        """ 
+        if (self.dsTA_agrupado is None):
+            self.dsTA_agrupado = self.agrupar_dataset(
+                self.get_dsTA(),
+                ['Curs Acadèmic', 'Tipus universitat', 'Sigles', 'Tipus Estudi', 'Branca', 'Sexe', 'Integrat S/N'],
+                '% Abandonament a primer curs'
+            ).rename(columns={"% Abandonament a primer curs": "Tasa de abandono"})
+        return self.dsTA_agrupado
+
+    def get_ds_fusionado(self) -> Optional[pd.DataFrame]:
+        """
+        Obtener el dataset fusionado de abandono y rendimiento
+            returns: pd.DataFrame o None si no se ha fusionado ningún dataset.
+        """ 
+        if (self.ds_fusionado is None):
+            self.ds_fusionado = self.merge_datasets(
+                self.get_dsRE_agrupado(),
+                self.get_dsTA_agrupado(),
+                ['Curs Acadèmic', 'Tipus universitat', 'Sigles', 'Tipus Estudi', 'Branca', 'Sexe', 'Integrat S/N']
+        )   
+        return self.ds_fusionado
+    
+    # def set_dsTA(self, df: pd.DataFrame) -> None:
+    #     """
+    #     Establecer el dataset de tasa de abandono
+    #         arguments: df: pd.DataFrame - El DataFrame a establecer como dataset de tasa de abandono
+    #     """
+    #     self.dsTA = df
+    
+    # def set_dsRE(self, df: pd.DataFrame) -> None:
+    #     """
+    #     Establecer el dataset de rendimiento de estudiantes
+    #         arguments: df: pd.DataFrame - El DataFrame a establecer como dataset de rendimiento de estudiantes
+    #     """
+    #     self.dsRE = df
+    
+
     def open_xlsx(self, path: str) -> Optional[pd.DataFrame]:
         """
         Abrir un archivo .xlsx y cargar su contenido en un DataFrame de pandas
@@ -134,7 +190,23 @@ class UOC_Dataset:
     
 
 
-    
+    # def agrupar_dataset(self, tipo : str ) -> None:   
+    #     """
+    #        Agrupar todas las filas que compartan las mismas características (excepto el nombre del estudio) para ambos datasets. 
+    #     """
+    #     if tipo == "RE":
+    #         self.dsRE_agrupado = self.dsRE.groupby(
+    #             ['Curs Acadèmic', 'Tipus universitat', 'Sigles', 'Tipus Estudi', 'Branca', 'Sexe', 'Integrat S/N'],as_index=False
+    #         )['Taxa rendiment'].mean().rename(columns={"Taxa rendiment": "Tasa de rendimiento"})  # as_index=False mantiene las columnas de agrupación como columnas normales en el DataFrame resultante y así podemos renombrar la columna Taxa rendiment;
+    #     elif tipo == "TA":
+    #         self.dsTA_agrupado = self.dsTA.groupby(
+    #             ['Curs Acadèmic', 'Tipus universitat', 'Sigles', 'Tipus Estudi', 'Branca', 'Sexe', 'Integrat S/N'],as_index=False
+                
+    #         )['% Abandonament a primer curs'].mean().rename(columns={"% Abandonament a primer curs": "Tasa de abandono"})  # as_index=False mantiene las columnas de agrupación como columnas normales en el DataFrame resultante y así podemos renombrar la columna Taxa rendiment;  
+
+
+
+
     def agrupar_dataset(self, df : pd.DataFrame, columnas_groupby : list, columna_media : str) -> pd.DataFrame:
         """
         Agrupar el dataset por las columnas indicadas y calcular la media de la columna indicada
@@ -144,12 +216,12 @@ class UOC_Dataset:
                 columna_media: str - La columna de la que calcular la media
             returns: pd.DataFrame - El DataFrame agrupado
         """
-        return df.groupby(columnas_groupby,as_index=False)[columna_media].mean()
+        return df.groupby(columnas_groupby,as_index=False)[columna_media].mean() # as_index=False mantiene las columnas de agrupación como columnas normales en el DataFrame resultante y así podemos renombrar la columna Taxa rendiment;
     
 
 
 
-    def merge_datasets(self, df1: pd.DataFrame, df2: pd.DataFrame, on: list, how: str = 'inner') -> pd.DataFrame:
+    def merge_datasets(self, df1: pd.DataFrame, df2: pd.DataFrame, columnas: list) -> None:
         """
            Fusionar dos datasets por las columnas indicadas
                arguments:
@@ -158,5 +230,5 @@ class UOC_Dataset:
                    on: list - Las columnas por las que fusionar
                    how: str - El tipo de fusión (default: 'inner')
                returns: pd.DataFrame - El DataFrame fusionado
-       """
-        return pd.merge(df1, df2, on=on, how=how) 
+        """
+        self.ds_fusionado = pd.merge(df1, df2, on=columnas, how='inner') 

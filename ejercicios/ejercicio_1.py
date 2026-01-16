@@ -1,4 +1,5 @@
 
+from typing import Optional
 from lib.uoc_datasets import UOC_Dataset as uoc_ds
 import pandas as pd
 
@@ -18,7 +19,7 @@ class Ejercicio_1:
         Si no se proporciona ninguna ruta, se pregunta al usuario qué dataset desea cargar.
         """
         self.uoc_ds : uoc_ds = uoc_ds()
-        self.ds : pd.DataFrame = self.uoc_ds.open_desde_consola() # Cargar el dataset según la entrada del usuario.
+        self.ds : Optional[pd.DataFrame] = self.uoc_ds.open_desde_consola() # Cargar el dataset según la entrada del usuario.
 
 
     def apartado_1(self) -> None:
