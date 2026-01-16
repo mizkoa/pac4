@@ -171,21 +171,7 @@ class UOC_Dataset:
                 ['Curs Acadèmic', 'Tipus universitat', 'Sigles', 'Tipus Estudi', 'Branca', 'Sexe', 'Integrat S/N']
         )  
         return self.ds_fusionado
-    
-    # def set_dsTA(self, df: pd.DataFrame) -> None:
-    #     """
-    #     Establecer el dataset de tasa de abandono
-    #         arguments: df: pd.DataFrame - El DataFrame a establecer como dataset de tasa de abandono
-    #     """
-    #     self.dsTA = df
-    
-    # def set_dsRE(self, df: pd.DataFrame) -> None:
-    #     """
-    #     Establecer el dataset de rendimiento de estudiantes
-    #         arguments: df: pd.DataFrame - El DataFrame a establecer como dataset de rendimiento de estudiantes
-    #     """
-    #     self.dsRE = df
-    
+        
 
     def open_xlsx(self, path: str) -> Optional[pd.DataFrame]:
         """
@@ -240,24 +226,6 @@ class UOC_Dataset:
             break
     
 
-
-    # def agrupar_dataset(self, tipo : str ) -> None:   
-    #     """
-    #        Agrupar todas las filas que compartan las mismas características (excepto el nombre del estudio) para ambos datasets. 
-    #     """
-    #     if tipo == "RE":
-    #         self.dsRE_agrupado = self.dsRE.groupby(
-    #             ['Curs Acadèmic', 'Tipus universitat', 'Sigles', 'Tipus Estudi', 'Branca', 'Sexe', 'Integrat S/N'],as_index=False
-    #         )['Taxa rendiment'].mean().rename(columns={"Taxa rendiment": "Tasa de rendimiento"})  # as_index=False mantiene las columnas de agrupación como columnas normales en el DataFrame resultante y así podemos renombrar la columna Taxa rendiment;
-    #     elif tipo == "TA":
-    #         self.dsTA_agrupado = self.dsTA.groupby(
-    #             ['Curs Acadèmic', 'Tipus universitat', 'Sigles', 'Tipus Estudi', 'Branca', 'Sexe', 'Integrat S/N'],as_index=False
-                
-    #         )['% Abandonament a primer curs'].mean().rename(columns={"% Abandonament a primer curs": "Tasa de abandono"})  # as_index=False mantiene las columnas de agrupación como columnas normales en el DataFrame resultante y así podemos renombrar la columna Taxa rendiment;  
-
-
-
-
     def agrupar_dataset(self, df : pd.DataFrame, columnas_groupby : list, columna_media : str) -> pd.DataFrame:
         """
         Agrupar el dataset por las columnas indicadas y calcular la media de la columna indicada
@@ -267,9 +235,7 @@ class UOC_Dataset:
                 columna_media: str - La columna de la que calcular la media
             returns: pd.DataFrame - El DataFrame agrupado
         """
-        return df.groupby(columnas_groupby,as_index=False)[columna_media].mean() # as_index=False mantiene las columnas de agrupación como columnas normales en el DataFrame resultante y así podemos renombrar la columna Taxa rendiment;
-    
-
+        return df.groupby(columnas_groupby,as_index=False)[columna_media].mean() # as_index=False mantiene las columnas de agrupación como columnas normales en el DataFrame resultante y así podemos renombrar la columna Taxa rendiment
 
 
     def merge_datasets(self, df1: pd.DataFrame, df2: pd.DataFrame, columnas: list) -> None:

@@ -1,0 +1,75 @@
+{
+  "metadata": {
+    "fecha_analisis": "2026-01-16",
+    "num_registros": 1081,
+    "periodo_temporal": [
+      "19-20",
+      "20-21",
+      "21-22",
+      "22-23"
+    ]
+  },
+  "estadisticas_globales": {
+    "abandono_medio": 0.1,
+    "rendimiento_medio": 0.88,
+    "correlacion_abandono_rendimiento": {
+      "correlacion_pearson": -0.44,
+      "p_value": 0.0
+    }
+  },
+  "analisis_por_ramas": {
+    "Ciències de la salut": {
+      "abandono_media": 0.07,
+      "abandono_desviacion": 0.09,
+      "rendimiento_media": 0.91,
+      "rendimiento_desviacion": 0.07,
+      "tendencia_abandono": "decreciente"
+    },
+    "Ciències socials i jurídiques": {
+      "abandono_media": 0.09,
+      "abandono_desviacion": 0.07,
+      "rendimiento_media": 0.9,
+      "rendimiento_desviacion": 0.07,
+      "tendencia_abandono": "estable"
+    },
+    "Arts i humanitats": {
+      "abandono_media": 0.14,
+      "abandono_desviacion": 0.12,
+      "rendimiento_media": 0.85,
+      "rendimiento_desviacion": 0.1,
+      "tendencia_abandono": "estable"
+    },
+    "Enginyeria i arquitectura": {
+      "abandono_media": 0.1,
+      "abandono_desviacion": 0.07,
+      "rendimiento_media": 0.84,
+      "rendimiento_desviacion": 0.08,
+      "tendencia_abandono": "estable"
+    },
+    "Ciències": {
+      "abandono_media": 0.07,
+      "abandono_desviacion": 0.07,
+      "rendimiento_media": 0.9,
+      "rendimiento_desviacion": 0.08,
+      "tendencia_abandono": "estable"
+    }
+  },
+  "ranking_ramas": {
+    "rama_mejor_rendimiento": {
+      "rama": "Enginyeria i arquitectura",
+      "universidad": "PRIVADA"
+    },
+    "rama_peor_rendimiento": {
+      "rama": "Arts i humanitats",
+      "universidad": "PRIVADA"
+    },
+    "rama_mayor_abandono": {
+      "rama": "Ciències de la salut",
+      "universidad": "PÚBLICA"
+    },
+    "rama_menor_abandono": {
+      "rama": "Ciències de la salut",
+      "universidad": "PRIVADA"
+    }
+  }
+}

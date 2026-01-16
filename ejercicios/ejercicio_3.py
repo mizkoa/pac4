@@ -1,17 +1,13 @@
-from __future__ import annotations
-
 import os
 from typing import Optional
-
 import matplotlib.pyplot as plt
 import pandas as pd
-
 from lib.uoc_datasets import UOC_Dataset as uoc_ds
 
 
 class Ejercicio_3:
     """
-       
+       Generación de Gráficos de Series Temporales
     """ 
     def __init__(self) -> None:
         """
@@ -19,7 +15,7 @@ class Ejercicio_3:
         """ 
 
         self.uoc_ds : uoc_ds = uoc_ds()
-        figura : Optional[plt.Figure] = None
+        self.figura : Optional[plt.Figure] = None
 		
    
     def apartado_1(self, show_graph : bool = False) -> None:
