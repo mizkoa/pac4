@@ -52,6 +52,10 @@ class UOC_Dataset:
         self.dsTA_agrupado: Optional[pd.DataFrame] = None # Dataset de tasa de abandono agrupado
         self.dsRE_agrupado: Optional[pd.DataFrame] = None # Dataset de rendimiento de estudiantes agrupado
         self.ds_fusionado: Optional[pd.DataFrame] = None # Dataset fusionado de abandono y rendimiento
+
+        self.flag_dsTA_renombrado : bool = False
+        self.flag_dsRE_limpio : bool = False
+        self.flag_dsTA_limpio : bool = False
  
     
     def get_dsTA(self) -> Optional[pd.DataFrame]:
@@ -61,6 +65,16 @@ class UOC_Dataset:
         """
         if self.dsTA is None:
             self.dsTA = self.open_xlsx("data/taxa_abandonament.xlsx")
+            if not self.flag_dsTA_renombrado: 
+                self.dsTA.rename(columns={
+                    'Naturalesa universitat responsable': 'Tipus universitat',
+                    'Universitat Responsable': 'Universitat',
+                    'Sexe Alumne': 'Sexe',
+                    'Tipus de centre': 'Integrat S/N'
+                    }, inplace=True)  # inplace=True modifica el DataFrame original y no crea una copia
+            if not self.flag_dsTA_limpio:
+                self.dsTA.drop(columns=["Universitat", "Unitat"], inplace=True) # inplace=True modifica el DataFrame original y no crea una copia
+                self.flag_dsTA_limpio = True
         return self.dsTA    
    
 
@@ -71,6 +85,9 @@ class UOC_Dataset:
         """
         if self.dsRE is None:
             self.dsRE = self.open_xlsx("data/rendiment_estudiants.xlsx")
+            if not self.flag_dsRE_limpio:
+                self.dsRE.drop(columns=["Universitat", "Unitat", "Crèdits ordinaris superats", "Crèdits ordinaris matriculats"], inplace=True) # inplace=True modifica el DataFrame original y no crea una copia
+                self.flag_dsRE_limpio = True
         return self.dsRE 
   
     def get_otroDS(self, path: str) -> Optional[pd.DataFrame]:
@@ -82,6 +99,40 @@ class UOC_Dataset:
             self.ds_arg = self.open_xlsx(path)
         return self.ds_arg   
     
+    def renombrar_dsTA(self) -> None:
+        """
+        Renombrar las columnas del dataset taxa_abandonament.xlsx para que coincida con el dataset rendiment_estudiants.xlsx
+        """      
+        if self.dsTA is None:   
+            self.dsTA = self.open_xlsx("data/taxa_abandonament.xlsx")
+        self.dsTA.rename(columns={
+           'Naturalesa universitat responsable': 'Tipus universitat',
+           'Universitat Responsable': 'Universitat',
+           'Sexe Alumne': 'Sexe',
+           'Tipus de centre': 'Integrat S/N'
+        }, inplace=True)  # inplace=True modifica el DataFrame original y no crea una copia 
+        self.flag_dsTA_renombrado = True
+    
+    def eliminar_columnas_dsTA(self) -> None:
+        """
+        Eliminar las columnas indicadas del dataset de tasa de abandono
+            arguments: columnas_a_eliminar: list - Lista de columnas a eliminar
+        """ 
+        if self.dsTA is None:   
+            self.dsTA = self.open_xlsx("data/taxa_abandonament.xlsx")
+        self.dsTA.drop(columns=["Universitat", "Unitat"], inplace=True) # inplace=True modifica el DataFrame original y no crea una copia 
+        self.flag_dsTA_limpio = True
+
+    def eliminar_columnas_dsRE(self) -> None:
+        """
+        Eliminar las columnas indicadas del dataset de rendimiento de estudiantes
+            arguments: columnas_a_eliminar: list - Lista de columnas a eliminar
+        """ 
+        if self.dsRE is None:
+            self.dsRE = self.open_xlsx("data/rendiment_estudiants.xlsx")
+        self.dsRE.drop(columns=["Universitat", "Unitat", "Crèdits ordinaris superats", "Crèdits ordinaris matriculats"], inplace=True) # inplace=True modifica el DataFrame original y no crea una copia        
+        self.flag_dsRE_limpio = True
+
     def get_dsRE_agrupado(self) -> Optional[pd.DataFrame]:
         """
         Obtener el dataset de rendimiento de estudiantes agrupado
@@ -114,11 +165,11 @@ class UOC_Dataset:
             returns: pd.DataFrame o None si no se ha fusionado ningún dataset.
         """ 
         if (self.ds_fusionado is None):
-            self.ds_fusionado = self.merge_datasets(
+            self.merge_datasets(
                 self.get_dsRE_agrupado(),
                 self.get_dsTA_agrupado(),
                 ['Curs Acadèmic', 'Tipus universitat', 'Sigles', 'Tipus Estudi', 'Branca', 'Sexe', 'Integrat S/N']
-        )   
+        )  
         return self.ds_fusionado
     
     # def set_dsTA(self, df: pd.DataFrame) -> None:

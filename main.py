@@ -2,7 +2,7 @@ import ejercicios as sol
 
 def main() -> None:
   
-   if (1==11):
+   if (1==1):
       ejercicio_1 : sol.Ejercicio_1 = sol.Ejercicio_1()
       ejercicio_1.apartado_1()
       ejercicio_1.apartado_2()
@@ -14,6 +14,10 @@ def main() -> None:
       ejercicio_2.apartado_2()
       ejercicio_2.apartado_3()
       ejercicio_2.apartado_4()
+   
+   ejercicio_3 : sol.Ejercicio_3 = sol.Ejercicio_3()
+   ejercicio_3.plot_tasa_abandono()
+
 
        
 if __name__ == "__main__":

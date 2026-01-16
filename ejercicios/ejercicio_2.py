@@ -16,30 +16,7 @@ class Ejercicio_2:
         """ 
 
         self.uoc_ds : uoc_ds = uoc_ds()
-        self.dsRE_agrupado : Optional[pd.DataFrame]  = None
-        self.dsTA_agrupado : Optional[pd.DataFrame]  = None   
-       
 
-
-
-
-
-
-        # rendimiento estudiantes
-       # self.dsRE = uoc_ds().open_xlsx("data/rendiment_estudiants.xlsx")
-        # tasa de abandono
-      #  self.dsTA = uoc_ds().open_xlsx("data/taxa_abandonament.xlsx")   
-        # dataset agrupado
-
-
-        
-
-
-      
-
-
-        # dataset fusionado
-       # self.dsFusionado = None
             
  
     def apartado_1(self) -> None:
@@ -53,13 +30,7 @@ class Ejercicio_2:
                     - "Tipus de centre" --> "Integrat S/N" 
         """      
        
-        self.uoc_ds.get_dsTA().rename(columns={
-           'Naturalesa universitat responsable': 'Tipus universitat',
-           'Universitat Responsable': 'Universitat',
-           'Sexe Alumne': 'Sexe',
-           'Tipus de centre': 'Integrat S/N'
-        }, inplace=True)  # inplace=True modifica el DataFrame original y no crea una copia
-
+        self.uoc_ds.renombrar_dsTA()
         print(self.uoc_ds.get_dsTA().info())
 
 
@@ -69,11 +40,10 @@ class Ejercicio_2:
                 - "Universitat", "Unitat" en ambos dataframes
                 - "Crèdits ordinaris superats" y "Crèdits ordinaris matriculats" en el caso del dataset de rendimiento.
         """ 
-        columnas_a_eliminar_RE = ["Universitat", "Unitat", "Crèdits ordinaris superats", "Crèdits ordinaris matriculats"]
-        columnas_a_eliminar_TA = ["Universitat", "Unitat"]
+       
         
-        self.uoc_ds.get_dsRE().drop(columns=columnas_a_eliminar_RE, inplace=True) # inplace=True modifica el DataFrame original y no crea una copia
-        self.uoc_ds.get_dsTA().drop(columns=columnas_a_eliminar_TA, inplace=True)
+        self.uoc_ds.eliminar_columnas_dsRE()
+        self.uoc_ds.eliminar_columnas_dsTA()
 
         print(self.uoc_ds.get_dsRE().info())
         print(self.uoc_ds.get_dsTA().info())
