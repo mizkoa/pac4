@@ -1,5 +1,5 @@
 import pandas as pd
-from helpers.uocdataset import UOCDataset as uoc_ds
+from lib.uoc_datasets import UOC_Dataset as uoc_ds
 
 class Ejercicio_2:
     """
@@ -12,9 +12,9 @@ class Ejercicio_2:
             pass
         """ 
         # rendimiento estudiantes
-        self.dsRE = uoc_ds("data/rendiment_estudiants.xlsx").get_df()
+        self.dsRE = uoc_ds().open_xlsx("data/rendiment_estudiants.xlsx")
         # tasa de abandono
-        self.dsTA = uoc_ds("data/taxa_abandonament.xlsx").get_df()
+        self.dsTA = uoc_ds().open_xlsx("data/taxa_abandonament.xlsx")   
         # dataset agrupado
         self.dsRE_agrupado = None
         self.dsTA_agrupado = None   
@@ -88,4 +88,4 @@ class Ejercicio_2:
         """ 
         self.dsFusionado = pd.merge(self.dsRE_agrupado, self.dsTA_agrupado, on=['Curs Acadèmic', 'Tipus universitat', 'Sigles', 'Tipus Estudi', 'Branca', 'Sexe', 'Integrat S/N'], how='inner')
         print(self.dsFusionado)
-        
+
